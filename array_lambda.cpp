@@ -216,6 +216,11 @@ void parallel_for_kernel(int nx, int ny, F function)
 template <typename F>
 void parallel_for(int nx, int ny, F function)
 {
+
+    // Launch 16×16 = 256 threads per block.
+    //
+    // There is nothing special about 16; it is simply a common choice for
+    // two-dimensional kernels. Each thread computes one array element.
     constexpr unsigned int threads_x = 16;
     constexpr unsigned int threads_y = 16;
 
@@ -245,8 +250,10 @@ void parallel_for(int nx, int ny, F function)
 int main()
 {
     try {
-        constexpr int nx = 8;
-        constexpr int ny = 6;
+
+        // size of our array -- this can be set at runtime
+        int nx = 8;
+        int ny = 6;
 
         // This object owns the GPU allocation. The allocation is released
         // automatically when array goes out of scope.
